@@ -1,3 +1,4 @@
+```
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -5,18 +6,27 @@ import seaborn as sns
 import scipy
 from scipy import stats
 %matplotlib inline
+```
 #read in data
+```
 motif_position_df = pd.read_csv('/home/jtao/for_shengnan/motif_start_frame_C57BL6J.tsv', sep='\t')
 motif_position_df.index = motif_position_df['ID'].values
 del motif_position_df['ID']
+```
 #vehicle position
+```
 veh_df=motif_position_df[motif_position_df['Factors'].str.contains('c57bl6_atac_veh')]
 del veh_df['Factors']
 del veh_df['chr']
+```
 #KLA position 
+```
 kla_df=motif_position_df[motif_position_df['Factors'].str.contains('c57bl6_atac_kla')]
 del kla_df['Factors']
 del kla_df['chr']
+```
+#function to count co-occurence
+```
 def co_occur(df):
     '''
     input is a dataframe contains all data of the genomic position of motif in chr1.
@@ -37,8 +47,14 @@ def co_occur(df):
             count_frame.ix[i,j]=count_frame.ix[i,j]+count_input
             np.fill_diagonal(count_frame.values, 0)# change diagonal back to zero
     return count_frame
+```
+#count co-occurence
+```
 veh_cooccurence_df=co_occur(veh_df)
 kla_cooccurence_df=co_occur(kla_df)
+```
+#function to calculate z score of co-occurence
+```
 def Find_Z(n):
     '''
     For all pairs of motifs - is there a pair that co-occurs more or less often than you would expect.
@@ -63,9 +79,14 @@ def Find_Z(n):
     zscore_frame = pd.DataFrame(zscore_all, columns=motifs)
     zscore_frame.index = motifs
     return zscore_frame
+```
+#find z scores
+```
 veh_z=Find_Z(veh_cooccurence_df)
 kla_z=Find_Z(kla_cooccurence_df)
-#find co_occurence_pdf
+```
+#function to find co-occurence pdf
+```
 def Find_pdf(n):
     '''
     For all pairs of motifs - is there a pair that co-occurs more or less often than you would expect.
@@ -93,5 +114,9 @@ def Find_pdf(n):
     p_frame = pd.DataFrame(p_for_dataframe, columns=motifs)
     p_frame.index = motifs
     return p_frame
+```
+#find pdf
+```
 veh_cooccurence_pdf=Find_pdf(veh_cooccurence_df)*195
 kla_cooccurence_pdf=Find_pdf(kla_cooccurence_df)*195
+```
