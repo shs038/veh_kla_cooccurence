@@ -53,6 +53,28 @@ def co_occur(df):
 veh_cooccurence_df=co_occur(veh_df)
 kla_cooccurence_df=co_occur(kla_df)
 ```
+#plot veh co-occurence
+```
+veh_cooccurence_plot=[]
+for i in range (veh_cooccurence_df.shape[1]-1):
+    for j in range (i+1,veh_cooccurence_df.shape[1]):
+        veh_cooccurence_plot.append(veh_cooccurence_df.ix[i,j])
+sns.distplot(veh_cooccurence_plot)
+plt.ylabel('Frequency')
+plt.xlabel('co_occurence')
+plt.title('veh') 
+```
+#plot kla co-occurence
+```
+kla_cooccurence_plot=[]
+for i in range (kla_cooccurence_df.shape[1]-1):
+    for j in range (i+1,kla_cooccurence_df.shape[1]):
+        kla_cooccurence_plot.append(kla_cooccurence_df.ix[i,j])
+sns.distplot(kla_cooccurence_plot)
+plt.ylabel('Frequency')
+plt.xlabel('co_occurence')
+plt.title('kla') 
+```
 #function to calculate z score of co-occurence
 ```
 def Find_Z(n):
@@ -85,6 +107,22 @@ def Find_Z(n):
 veh_z=Find_Z(veh_cooccurence_df)
 kla_z=Find_Z(kla_cooccurence_df)
 ```
+#plot overall z scores
+```
+veh_z_plot=veh_z.values
+kla_z_plot=kla_z.values
+veh_z_plot=veh_z_plot.flatten()
+kla_z_plot=kla_z_plot.flatten()
+sns.distplot(veh_z_plot[veh_z_plot!=100])
+plt.ylabel('Frequency')
+plt.xlabel('z score')
+plt.title('veh')
+plt.show()
+sns.distplot(kla_z_plot[kla_z_plot!=100])
+plt.ylabel('Frequency')
+plt.xlabel('z score')
+plt.title('kla')
+```
 #function to find co-occurence pdf
 ```
 def Find_pdf(n):
@@ -105,7 +143,7 @@ def Find_pdf(n):
         std=np.std(co_motif)
         pdf=stats.norm.pdf(co_motif,loc=mean, scale=std)# find z socre 
         p_matrix[i,:]=pdf
-    #assign co-occurance z socre of one motif with itself as 100 to make dataframe 
+    #assign co-occurance pdf of one motif with itself as 100 to make dataframe 
     p_for_dataframe=np.zeros((p_matrix.shape[0],p_matrix.shape[0]),dtype=np.float)
     for i in range (p_matrix.shape[0]):
         p_motif_self=p_matrix[i,:]
@@ -115,8 +153,24 @@ def Find_pdf(n):
     p_frame.index = motifs
     return p_frame
 ```
-#find pdf
+#find pdf, corrected by times of compare
 ```
 veh_cooccurence_pdf=Find_pdf(veh_cooccurence_df)*195
 kla_cooccurence_pdf=Find_pdf(kla_cooccurence_df)*195
+```
+#plot overall pdf
+```
+veh_pdf_plot=veh_cooccurence_pdf.values
+kla_pdf_plot=kla_cooccurence_pdf.values
+veh_pdf_plot=veh_pdf_plot.flatten()
+kla_pdf_plot=kla_pdf_plot.flatten()
+sns.distplot(veh_pdf_plot[veh_pdf_plot!=19500])
+plt.ylabel('Frequency')
+plt.xlabel('pdf')
+plt.title('veh')
+plt.show()
+sns.distplot(kla_pdf_plot[kla_pdf_plot!=19500])
+plt.ylabel('Frequency')
+plt.xlabel('pdf')
+plt.title('kla')
 ```
